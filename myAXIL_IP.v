@@ -6,16 +6,16 @@
 //////////////////////////////////////////////////////////////////////////////////
 // The module easyaxil (in easyaxil.v) requires modifications:
 // 
-// change C_AXI_DATA_WIDTH in the parameter declaration from localparam to parameter:
+// 1. change C_AXI_DATA_WIDTH in the parameter declaration from localparam to parameter:
 //		parameter	C_AXI_DATA_WIDTH = 32,
 //
-// Add the following output ports to the module:
+// 2. Add the following output ports to the module:
 //		output	wire	[C_AXI_DATA_WIDTH-1:0]				slv_reg0,
 //		output	wire	[C_AXI_DATA_WIDTH-1:0]				slv_reg1,
 //		output	wire	[C_AXI_DATA_WIDTH-1:0]				slv_reg2,
 //		output	wire	[C_AXI_DATA_WIDTH-1:0]				slv_reg3
 //
-// Assign values to the new outputs (This can be done in the section "Register/wire signal declarations"):
+// 3. Assign values to the new outputs (This can be done in the section "Register/wire signal declarations"):
 //	assign slv_reg0 = r0;
 //	assign slv_reg1 = r1;
 //	assign slv_reg2 = r2;
