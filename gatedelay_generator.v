@@ -26,13 +26,17 @@ begin
 end
     
 initial counter = 32'b0;
-initial r_strb = 1'b0;
+initial r_stb = 1'b0;
 
-
+//create counter strobe signal
+always @(posedge i_clk)
+	ck_stb <= (counter == delay + width);
+	
 always @ (posedge clk) begin : PULSE_GENERATOR
 	if (i_rst) begin
 		counter <= 0;
-	end else if ()	
+	end else if (r_trigger_event) counter <= counter + 1;
+	else if (busy &&) 
   if (trigger && !trigger_old) begin
       enable <= 1;
       trigger_old <= trigger;
