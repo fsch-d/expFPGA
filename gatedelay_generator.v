@@ -2,12 +2,27 @@
 
 module GateDelayGen(
     input clk,
-    input trigger,
+    input i_trigger,
     input [31:0] delay,
     input [31:0] width,
     output PULSE,
     output busy
     );
+
+initial	sync_pipe      = 1'b0;
+initial	r_trigger_state = 1'b0;
+
+//run input through two flip-flops to avoid metastability    
+always @(posedge clk) { r_trigger_state, sync_pipe } <= { sync_pipe, i_trigger };
+
+//generate trigger event
+initial	r_last         = 1'b0;
+initial	r_button_event = 1'b0;
+always @(posedge clk)
+begin
+	r_last <= r_trigger_state;
+    r_trigger_event <= (r_trigger_state)&&(!r_last);
+end
     
 reg [31:0] counter;
 reg enable;
