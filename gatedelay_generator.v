@@ -1,12 +1,13 @@
 `timescale 1ns / 1ps
 
 module GateDelayGen(
-    input clk,
+    input i_clk,
+    input i_rst,
     input i_trigger,
     input [31:0] delay,
     input [31:0] width,
-    output PULSE,
-    output busy
+    output o_PULSE,
+    output o_busy
     );
 
 initial	sync_pipe      = 1'b0;
@@ -20,24 +21,18 @@ initial	r_last         = 1'b0;
 initial	r_button_event = 1'b0;
 always @(posedge clk)
 begin
-	r_last <= r_trigger_state;
+    r_last <= r_trigger_state;
     r_trigger_event <= (r_trigger_state)&&(!r_last);
 end
     
-reg [31:0] counter;
-reg enable;
-reg trigger_old;
+initial counter = 32'b0;
+initial r_strb = 1'b0;
 
-assign PULSE = ((counter > delay) && (counter < (delay + width))) ? 1 : 0;
-assign busy = (enable == 1'b1) ? 1 : 0;
-
-initial begin
-    counter <= 0;
-    enable <= 0;
-    trigger_old <= 0;
-end
 
 always @ (posedge clk) begin : PULSE_GENERATOR
+	if (i_rst) begin
+		counter <= 0;
+	end else if ()	
   if (trigger && !trigger_old) begin
       enable <= 1;
       trigger_old <= trigger;
@@ -52,5 +47,8 @@ always @ (posedge clk) begin : PULSE_GENERATOR
   end
 end
   
-    
+assign o_PULSE = ((counter > delay) && (counter < (delay + width))) ? 1 : 0;
+assign o_busy = (counter > 0) ? 1 : 0;
+
+	
 endmodule
