@@ -18,7 +18,7 @@ always @(posedge clk) { r_trigger_state, sync_pipe } <= { sync_pipe, i_trigger }
 
 //generate trigger event (synchronized to clock)
 initial	r_last         = 1'b0;
-initial	r_button_event = 1'b0;
+initial	r_trigger_event = 1'b0;
 always @(posedge clk)
 begin
     r_last <= r_trigger_state;
