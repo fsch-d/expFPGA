@@ -25,7 +25,7 @@ begin
     r_trigger_event <= (r_trigger_state)&&(!r_last);
 end
     
-initial counter = 33'b0;
+initial counter = 32'b0;
 initial r_stb = 1'b0;
 
 //create counter strobe signal
