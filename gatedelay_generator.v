@@ -9,17 +9,25 @@ module GateDelayGen(
     output o_PULSE,
     output o_busy
     );
+    
+reg sync_pipe;
+reg r_trigger_state;
+reg r_last;
+reg r_trigger_event;
+reg [31:0] counter;
+reg r_stb;
 
-initial	sync_pipe      = 1'b0;
+initial sync_pipe      = 1'b0;
 initial	r_trigger_state = 1'b0;
 
 //run input through two flip-flops to avoid metastability    
-always @(posedge clk) { r_trigger_state, sync_pipe } <= { sync_pipe, i_trigger };
+always @(posedge i_clk) { r_trigger_state, sync_pipe } <= { sync_pipe, i_trigger };
+
 
 //generate trigger event (synchronized to clock)
 initial	r_last         = 1'b0;
 initial	r_trigger_event = 1'b0;
-always @(posedge clk)
+always @(posedge i_clk)
 begin
     r_last <= r_trigger_state;
     r_trigger_event <= (r_trigger_state)&&(!r_last);
@@ -33,7 +41,7 @@ always @(posedge i_clk)
 	r_stb <= (counter == delay + width);
 
 // run counter
-always @ (posedge clk) begin : PULSE_GENERATOR
+always @ (posedge i_clk) begin : PULSE_GENERATOR
 	if (i_rst) begin
 		counter <= 0;
 	end else if (r_stb) counter <= 0;
@@ -41,8 +49,8 @@ always @ (posedge clk) begin : PULSE_GENERATOR
 	else if (o_busy) counter <= counter + 1;
 end
   
-assign o_PULSE = ((counter > delay) && (counter < (delay + width))) ? 1 : 0;
-assign o_busy = (counter > 0) ? 1 : 0;
+assign o_PULSE = ((counter > delay) && (counter <= (delay + width))) ? 1 : 0;
+assign o_busy = (counter > 0 && !r_stb) ? 1 : 0;
 
 	
 endmodule
